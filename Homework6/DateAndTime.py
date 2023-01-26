@@ -211,7 +211,10 @@ class DateTime:
 
     def sub_hour(self, n):
         self.sub_day((self.__time.hour + n) // 24)
-        self.__time.add_hour(-n)
+        # print(n - ((self.__time.hour + n) // 24) * 24)
+        if self.__time.hour < (n - ((self.__time.hour + n) // 24) * 24):
+            self.sub_day(1)
+            self.__time.hour = 24 - (n - ((self.__time.hour + n) // 24) * 24) + self.__time.hour
 
 
 dt = DateTime(Date(2000, 2, 29), Time(3, 58, 57))
@@ -234,4 +237,6 @@ print(dt)
 dt.sub_day(366)
 print(dt)
 dt.sub_hour(139)
+print(dt)
+dt.sub_hour(24)
 print(dt)
