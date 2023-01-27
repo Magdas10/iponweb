@@ -1,3 +1,10 @@
+from copy import deepcopy
+
+
+class DateError(Exception):
+    pass
+
+
 class Date:
     dct = {"January": 31, "February": 28, "March": 31, "April": 30, "May": 31, "June": 30, "July": 31,
            "August": 31, "September": 30, "October": 31, "November": 30, "December": 31}
@@ -5,20 +12,43 @@ class Date:
 
     def __init__(self, year, month, day):
         if isinstance(year, int) and year > 0:
-            self.year = year
+            self.__year = year
         else:
-            print("wrong input")
+            raise DateError
         self.dct["February"] = 29 if self.is_leap_year() else 28
         Date.daysOfMonths[1] = self.dct["February"]
         if isinstance(month, int) and month in range(1, 13):
-            self.month = month
+            self.__month = month
         else:
-            print("wrong input for month")
-        if isinstance(day, int) and day in range(1, self.daysOfMonths[
-                                                        month - 1] + 1):  # check if input is right, you cannot have 30 of February
-            self.day = day
+            raise DateError
+        if isinstance(day, int) and day in range(1, self.daysOfMonths[month - 1] + 1):
+            self.__day = day
         else:
-            print("wrong input for day")
+            raise DateError
+
+    @property
+    def year(self):
+        return self.__year
+
+    @year.setter
+    def year(self, value):
+        self.__year = value
+
+    @property
+    def month(self):
+        return self.__month
+
+    @month.setter
+    def month(self, value):
+        self.__month = value
+
+    @property
+    def day(self):
+        return self.__day
+
+    @day.setter
+    def day(self, value):
+        self.__day = value
 
     def __repr__(self):
         return "{}.{}.{}".format(self.day, self.month, self.year)
@@ -34,21 +64,21 @@ class Date:
             if self.month == 2 and self.day == 29:
                 self.day = Date.daysOfMonths[1]
         else:
-            print("wrong input")
+            raise DateError
 
     def add_month(self, n):
         if isinstance(n, int):
-            self.month = (self.month + n) % 12 if (self.month + n) % 12 != 0 else 12
             self.year += (self.month + n) // 12
+            self.month = (self.month + n) % 12 if (self.month + n) % 12 != 0 else 12
             self.dct["February"] = 29 if self.is_leap_year() else 28
             Date.daysOfMonths[1] = self.dct["February"]
             if Date.daysOfMonths[self.month - 1] < self.day:
                 self.day = Date.daysOfMonths[self.month - 1]
         else:
-            print("wrong input")
+            raise DateError
 
     def add_day(self, n):
-        if isinstance(n, int):
+        if isinstance(n, int) and n >= 0:
             for day in range(n):
                 self.dct["February"] = 29 if self.is_leap_year() else 28
                 Date.daysOfMonths[1] = self.dct["February"]
@@ -59,7 +89,7 @@ class Date:
                 else:
                     self.day += 1
         else:
-            print("wrong input")
+            raise DateError
 
 
 # d = Date(2000, 2, 29)
@@ -75,20 +105,48 @@ class Date:
 # d.add_day(366)
 # print(d)
 
+class TimeError(Exception):
+    pass
+
+
 class Time:
     def __init__(self, hour, minute, second):
         if isinstance(hour, int) and hour in range(0, 25):
-            self.hour = hour
+            self.__hour = hour
         else:
-            print("wrong input for hour")
+            raise TimeError
         if isinstance(minute, int) and minute in range(0, 60):
-            self.minute = minute
+            self.__minute = minute
         else:
-            print("wrong input for minute")
+            raise TimeError
         if isinstance(second, int) and second in range(0, 60):
-            self.second = second
+            self.__second = second
         else:
-            print("wrong input for second")
+            raise TimeError
+
+    @property
+    def hour(self):
+        return self.__hour
+
+    @hour.setter
+    def hour(self, value):
+        self.__hour = value
+
+    @property
+    def minute(self):
+        return self.__minute
+
+    @minute.setter
+    def minute(self, value):
+        self.__minute = value
+
+    @property
+    def second(self):
+        return self.__second
+
+    @second.setter
+    def second(self, value):
+        self.__second = value
 
     def __repr__(self):
         return "{}:{}:{}".format(self.hour, self.minute, self.second)
@@ -97,7 +155,7 @@ class Time:
         if isinstance(n, int):
             self.hour = (self.hour + n) % 24
         else:
-            print("wrong input")
+            raise TimeError
 
     def add_minute(self, n):
         if isinstance(n, int):
@@ -106,7 +164,7 @@ class Time:
                 self.minute -= 60
                 self.add_hour(1)
         else:
-            print("wrong input")
+            raise TimeError
 
     def add_second(self, n):
         if isinstance(n, int):
@@ -115,7 +173,7 @@ class Time:
                 self.second -= 60
                 self.add_minute(1)
         else:
-            print("wrong input")
+            raise TimeError
 
     def sum(self, other):
         result = Time(self.hour, self.minute, self.second)
@@ -123,6 +181,10 @@ class Time:
         result.add_minute(other.minute)
         result.add_hour(other.hour)
         return result
+
+
+class DateTimeError(Exception):
+    pass
 
 
 class DateTime:
@@ -177,7 +239,7 @@ class DateTime:
                 self.__time.minute -= 60
                 self.add_hour(1)
         else:
-            print("wrong input")
+            raise DateTimeError
 
     def add_second(self, n):
         if isinstance(n, int):
@@ -186,7 +248,7 @@ class DateTime:
                 self.__time.second -= 60
                 self.add_minute(1)
         else:
-            print("wrong input")
+            raise DateTimeError
 
     def sub_year(self, n):
         self.add_year(-n)
@@ -207,42 +269,79 @@ class DateTime:
                 else:
                     self.__date.day -= 1
         else:
-            print("wrong input")
+            raise DateTimeError
 
     def sub_hour(self, n):
-        self.sub_day((self.__time.hour + n) // 24)
-        # print(n - ((self.__time.hour + n) // 24) * 24)
-        if self.__time.hour < (n - ((self.__time.hour + n) // 24) * 24):
-            self.sub_day(1)
-            self.__time.hour = 24 - (n - ((self.__time.hour + n) // 24) * 24) + self.__time.hour
+        if isinstance(n, int) and n >= 0:
+            for i in range(n):
+                if self.__time.hour - 1 < 0:
+                    self.sub_day(1)
+                    self.__time.hour = 23
+                else:
+                    self.__time.hour -= 1
         else:
-            self.__time.hour -= n - ((self.__time.hour + n) // 24) * 24
+            raise DateTimeError
 
     def sub_minute(self, n):
-        # print(n - ((n + self.__time.minute) // 60) * 60)
-        self.sub_hour((self.__time.minute + n) // 60)
-        if self.__time.minute < n - ((n + self.__time.minute) // 60) * 60:
-            self.sub_hour(1)
-            self.__time.minute = 60 - (n - ((n + self.__time.minute) // 60) * 60) + self.__time.minute
+        if isinstance(n, int) and n >= 0:
+            for i in range(n):
+                if self.__time.minute - 1 < 0:
+                    self.sub_hour(1)
+                    self.__time.minute = 59
+                else:
+                    self.__time.minute -= 1
         else:
-            if n - ((n + self.__time.minute) // 60) * 60 < 0:
-                self.__time.minute -= n
-            else:
-                self.__time.minute -= n - ((self.__time.minute + n) // 60) * 60
+            raise DateTimeError
 
     def sub_second(self, n):
-        # print(n - ((n + self.__time.second) // 60) * 60)
-        self.sub_minute((self.__time.second + n) // 60)
-        if self.__time.second < n - ((n + self.__time.second) // 60) * 60:
-            self.sub_minute(1)
-            self.__time.second = 60 - (n - ((n + self.__time.second) // 60) * 60) + self.__time.second
+        if isinstance(n, int) and n >= 0:
+            for i in range(n):
+                if self.__time.second - 1 < 0:
+                    self.sub_minute(1)
+                    self.__time.second = 59
+                else:
+                    self.__time.second -= 1
         else:
-            if n - ((n + self.__time.second) // 60) * 60 < 0:
-                self.__time.second -= n
-            else:
-                self.__time.second -= n - ((self.__time.second + n) // 60) * 60
+            raise DateTimeError
+
+    def __add__(self, other):
+        result = deepcopy(self)
+        result.add_second(other.time.second)
+        result.add_minute(other.time.minute)
+        result.add_hour(other.time.hour)
+        result.add_day(other.date.day)
+        result.add_month(other.date.month)
+        result.add_year(other.date.year)
+        # result.add_year(other.date.year)
+        # result.add_month(other.date.month)
+        # result.add_day(other.date.day)
+        # result.add_hour(other.time.hour)
+        # result.add_minute(other.time.minute)
+        # result.add_second(other.time.second)
+        return result
+
+    def __sub__(self, other):
+        result = deepcopy(self)
+        result.sub_second(other.time.second)
+        result.sub_minute(other.time.minute)
+        result.sub_hour(other.time.hour)
+        result.sub_day(other.date.day)
+        result.sub_month(other.date.month)
+        result.sub_year(other.date.year)
+        return result
 
 
+# dt1 = DateTime(Date(2001, 2, 28), Time(12, 34, 56))
+# dt1.sub_second(8)
+# print(dt1)
+# dt2 = DateTime(Date(1989, 8, 20), Time(4, 7, 8))
+# print(dt1 - dt2)
+# print(dt1 + dt2)
+# print(dt1)
+# print(dt2)
+# dt3 = DateTime(Date(2000, 12, 31), Time(23, 59, 59))
+# print(dt2 + dt3)
+# print(dt1 - dt2)
 # dt = DateTime(Date(2000, 2, 29), Time(3, 58, 57))
 # print(dt)
 # dt.add_month(1)
@@ -266,7 +365,7 @@ class DateTime:
 # print(dt)
 # dt.sub_hour(24)
 # print(dt)
-
+#
 # dt1 = DateTime(Date(2000, 2, 29), Time(0, 0, 0))
 # print(dt1)
 # dt1.sub_day(366)
@@ -275,22 +374,29 @@ class DateTime:
 # print(dt1)
 # dt1.sub_hour(250)
 # print(dt1)
+#
+# dt2 = DateTime(Date(2005, 4, 30), Time(3, 57, 12))
+# print(dt2)
+# dt2.sub_minute(360)
+# print(dt2)
+# dt2.sub_minute(5)
+# print(dt2)
+# dt2.sub_second(3600)
+# print(dt2)
+# dt2.sub_second(13)
+# print(dt2)
+# dt2.sub_second(19)
+# print(dt2)
 
-dt2 = DateTime(Date(2005, 4, 30), Time(3, 57, 12))
-print(dt2)
-# dt2.sub_day(132)
-# print(dt2)
-# dt2.sub_hour(48)
-# print(dt2)
-# dt2.sub_minute(198)
-# print(dt2)
-dt2.sub_minute(360)
-print(dt2)
-dt2.sub_minute(5)
-print(dt2)
-dt2.sub_second(3600)
-print(dt2)
-dt2.sub_second(13)
-print(dt2)
-dt2.sub_second(19)
-print(dt2)
+# dt = DateTime(Date(2021, 3, 31), Time(23, 5, 6))
+# dt.sub_month(13)
+# print(dt)
+# otherr = DateTime(Date(2022, 7, 12), Time(10, 5, 1))
+# print(otherr)
+# otherr.sub_hour(23)
+# print(otherr)
+# otherr.sub_minute(5)
+# print(otherr)
+# otherr.sub_second(6)
+# print(otherr)
+# # print(other)
