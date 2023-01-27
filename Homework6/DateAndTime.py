@@ -215,10 +215,36 @@ class DateTime:
         if self.__time.hour < (n - ((self.__time.hour + n) // 24) * 24):
             self.sub_day(1)
             self.__time.hour = 24 - (n - ((self.__time.hour + n) // 24) * 24) + self.__time.hour
+        else:
+            self.__time.hour -= n - ((self.__time.hour + n) // 24) * 24
+
+    def sub_minute(self, n):
+        # print(n - ((n + self.__time.minute) // 60) * 60)
+        self.sub_hour((self.__time.minute + n) // 60)
+        if self.__time.minute < n - ((n + self.__time.minute) // 60) * 60:
+            self.sub_hour(1)
+            self.__time.minute = 60 - (n - ((n + self.__time.minute) // 60) * 60) + self.__time.minute
+        else:
+            if n - ((n + self.__time.minute) // 60) * 60 < 0:
+                self.__time.minute -= n
+            else:
+                self.__time.minute -= n - ((self.__time.minute + n) // 60) * 60
+
+    def sub_second(self, n):
+        # print(n - ((n + self.__time.second) // 60) * 60)
+        self.sub_minute((self.__time.second + n) // 60)
+        if self.__time.second < n - ((n + self.__time.second) // 60) * 60:
+            self.sub_minute(1)
+            self.__time.second = 60 - (n - ((n + self.__time.second) // 60) * 60) + self.__time.second
+        else:
+            if n - ((n + self.__time.second) // 60) * 60 < 0:
+                self.__time.second -= n
+            else:
+                self.__time.second -= n - ((self.__time.second + n) // 60) * 60
 
 
-dt = DateTime(Date(2000, 2, 29), Time(3, 58, 57))
-print(dt)
+# dt = DateTime(Date(2000, 2, 29), Time(3, 58, 57))
+# print(dt)
 # dt.add_month(1)
 # print(dt)
 # dt.add_day(366)
@@ -231,12 +257,40 @@ print(dt)
 # dt.add_hour(139)
 # print(dt)
 # dt.add_second(123000)
+# # print(dt)
+# dt.sub_month(12)
 # print(dt)
-dt.sub_month(12)
-print(dt)
-dt.sub_day(366)
-print(dt)
-dt.sub_hour(139)
-print(dt)
-dt.sub_hour(24)
-print(dt)
+# dt.sub_day(366)
+# print(dt)
+# dt.sub_hour(139)
+# print(dt)
+# dt.sub_hour(24)
+# print(dt)
+
+# dt1 = DateTime(Date(2000, 2, 29), Time(0, 0, 0))
+# print(dt1)
+# dt1.sub_day(366)
+# print(dt1)
+# dt1.sub_day(365)
+# print(dt1)
+# dt1.sub_hour(250)
+# print(dt1)
+
+dt2 = DateTime(Date(2005, 4, 30), Time(3, 57, 12))
+print(dt2)
+# dt2.sub_day(132)
+# print(dt2)
+# dt2.sub_hour(48)
+# print(dt2)
+# dt2.sub_minute(198)
+# print(dt2)
+dt2.sub_minute(360)
+print(dt2)
+dt2.sub_minute(5)
+print(dt2)
+dt2.sub_second(3600)
+print(dt2)
+dt2.sub_second(13)
+print(dt2)
+dt2.sub_second(19)
+print(dt2)
