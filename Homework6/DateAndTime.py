@@ -321,14 +321,18 @@ class DateTime:
         return result
 
     def __sub__(self, other):
-        result = deepcopy(self)
-        result.sub_second(other.time.second)
-        result.sub_minute(other.time.minute)
-        result.sub_hour(other.time.hour)
-        result.sub_day(other.date.day)
-        result.sub_month(other.date.month)
-        result.sub_year(other.date.year)
-        return result
+        if self.__date.year > other.__date.year:
+            result = deepcopy(self)
+            result.sub_second(other.time.second)
+            result.sub_minute(other.time.minute)
+            result.sub_hour(other.time.hour)
+            result.sub_day(other.date.day)
+            result.sub_month(other.date.month)
+            result.sub_year(other.date.year)
+            return f"{result.__date.year} years, {result.__date.month} months, {result.__date.day} days," \
+                   f"{result.__time.hour} hours, {result.__time.minute} minutes, {result.__time.second} seconds"
+        else:
+            raise DateTimeError
 
 
 # dt1 = DateTime(Date(2001, 2, 28), Time(12, 34, 56))
@@ -388,15 +392,15 @@ class DateTime:
 # dt2.sub_second(19)
 # print(dt2)
 
-# dt = DateTime(Date(2021, 3, 31), Time(23, 5, 6))
-# dt.sub_month(13)
-# print(dt)
-# otherr = DateTime(Date(2022, 7, 12), Time(10, 5, 1))
-# print(otherr)
-# otherr.sub_hour(23)
-# print(otherr)
-# otherr.sub_minute(5)
-# print(otherr)
-# otherr.sub_second(6)
-# print(otherr)
-# # print(other)
+dt = DateTime(Date(2021, 3, 31), Time(23, 5, 6))
+dt.sub_month(13)
+print(dt)
+otherr = DateTime(Date(2022, 7, 12), Time(10, 5, 1))
+print(otherr - dt)
+otherr.sub_hour(23)
+print(otherr)
+otherr.sub_minute(5)
+print(otherr)
+otherr.sub_second(6)
+print(otherr)
+# print(other)
