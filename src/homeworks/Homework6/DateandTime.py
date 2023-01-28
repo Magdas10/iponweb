@@ -53,6 +53,43 @@ class Date:
     def __repr__(self):
         return "{}.{}.{}".format(self.day, self.month, self.year)
 
+    def __ge__(self, other):
+        if self.__year > other.__year:
+            return True
+        elif self.__year == other.__year:
+            if self.__month > other.__month:
+                return True
+            elif self.__month == other.__month:
+                if self.__day > other.__day:
+                    return True
+                elif self.__day == other.__day:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    def __gt__(self, other):
+        if self.__year > other.__year:
+            return True
+        elif self.__year == other.__year:
+            if self.__month > other.__month:
+                return True
+            elif self.__month == other.__month:
+                if self.__day > other.__day:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    def __eq__(self, other):
+        return self.__year == other.__year and self.__month == other.__month and self.__day == other.__day
+
     def is_leap_year(self):
         return (self.year % 4 == 0 and self.year % 100 != 0) or self.year % 400 == 0
 
@@ -67,13 +104,18 @@ class Date:
             raise DateError
 
     def add_month(self, n):
-        if isinstance(n, int):
-            self.year += (self.month + n) // 12
-            self.month = (self.month + n) % 12 if (self.month + n) % 12 != 0 else 12
+        if isinstance(n, int) and n >= 0:
+            for i in range(n):
+                if self.__month + 1 > 12:
+                    self.__month = 1
+                    self.__year += 1
+                else:
+                    self.__month += 1
             self.dct["February"] = 29 if self.is_leap_year() else 28
             Date.daysOfMonths[1] = self.dct["February"]
-            if Date.daysOfMonths[self.month - 1] < self.day:
-                self.day = Date.daysOfMonths[self.month - 1]
+            if self.month == 2 and self.day == 29:
+                self.day = Date.daysOfMonths[1]
+
         else:
             raise DateError
 
@@ -90,6 +132,9 @@ class Date:
                     self.day += 1
         else:
             raise DateError
+
+
+# print(Date(2020, 2, 13) >= Date(2020, 2, 14))
 
 
 # d = Date(2000, 2, 29)
@@ -151,6 +196,43 @@ class Time:
     def __repr__(self):
         return "{}:{}:{}".format(self.hour, self.minute, self.second)
 
+    def __ge__(self, other):
+        if self.__hour > other.__hour:
+            return True
+        elif self.__hour == other.__hour:
+            if self.__minute > other.__minute:
+                return True
+            elif self.__minute == other.__minute:
+                if self.__second > other.__second:
+                    return True
+                elif self.__second == other.__second:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    def __gt__(self, other):
+        if self.__hour > other.__hour:
+            return True
+        elif self.__hour == other.__hour:
+            if self.__minute > other.__minute:
+                return True
+            elif self.__minute == other.__minute:
+                if self.__second > other.__second:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    def __eq__(self, other):
+        return self.__hour == other.__hour and self.__minute == other.__minute and self.__second == other.__second
+
     def add_hour(self, n):
         if isinstance(n, int):
             self.hour = (self.hour + n) % 24
@@ -181,6 +263,9 @@ class Time:
         result.add_minute(other.minute)
         result.add_hour(other.hour)
         return result
+
+
+print(Time(22, 59, 0) >= Time(23, 59, 0))
 
 
 class DateTimeError(Exception):
@@ -254,22 +339,44 @@ class DateTime:
         self.add_year(-n)
 
     def sub_month(self, n):
-        self.add_month(-n)
-
-    def sub_day(self, n):
         if isinstance(n, int) and n >= 0:
-            for day in range(n):
-                self.__date.dct["February"] = 29 if self.__date.is_leap_year() else 28
-                self.__date.daysOfMonths[1] = self.__date.dct["February"]
-                if self.__date.day == 1:
-                    self.__date.day = 31 if self.__date.month == 1 else self.__date.daysOfMonths[
-                        self.__date.month - 2]
-                    self.__date.year = (self.__date.year - 1) if self.__date.month == 1 else self.__date.year
-                    self.__date.month = 12 if self.__date.month == 1 else (self.__date.month - 1)
+            for i in range(n):
+                if self.__date.month - 1 <= 0:
+                    self.__date.year -= 1
+                    self.__date.month = 12
                 else:
-                    self.__date.day -= 1
+                    self.__date.month -= 1
+            self.__date.dct["February"] = 29 if self.__date.is_leap_year() else 28
+            Date.daysOfMonths[1] = self.__date.dct["February"]
+            if self.__date.month == 2 and self.__date.day == 29:
+                self.__date.day = Date.daysOfMonths[1]
         else:
             raise DateTimeError
+
+    def sub_day(self, n):
+        # if isinstance(n, int) and n >= 0:
+        #     for day in range(n):
+        #         self.__date.dct["February"] = 29 if self.__date.is_leap_year() else 28
+        #         self.__date.daysOfMonths[1] = self.__date.dct["February"]
+        #         if self.__date.day == 1:
+        #             self.__date.day = 31 if self.__date.month == 1 else self.__date.daysOfMonths[
+        #                 self.__date.month - 2]
+        #             self.__date.year = (self.__date.year - 1) if self.__date.month == 1 else self.__date.year
+        #             self.__date.month = 12 if self.__date.month == 1 else (self.__date.month - 1)
+        #         else:
+        #             self.__date.day -= 1
+        # else:
+        #     raise DateTimeError
+        if isinstance(n, int) and n >= 0:
+            for i in range(n):
+                self.__date.dct["February"] = 29 if self.__date.is_leap_year() else 28
+                Date.daysOfMonths[1] = self.__date.dct["February"]
+                if self.__date.day - 1 <= 0:
+                    self.__date.month = self.__date.month - 1 if self.__date.month - 1 > 0 else 12
+                    self.__date.year = (self.__date.year - 1) if self.__date.month == 12 else self.__date.year
+                    self.__date.day = Date.daysOfMonths[self.__date.month - 1]
+                else:
+                    self.__date.day -= 1
 
     def sub_hour(self, n):
         if isinstance(n, int) and n >= 0:
@@ -304,6 +411,9 @@ class DateTime:
         else:
             raise DateTimeError
 
+    def __ge__(self, other):
+        return self.__date > other.__date or (self.date == other.__date and self.__time >= other.__time)
+
     def __add__(self, other):
         result = deepcopy(self)
         result.add_second(other.time.second)
@@ -312,16 +422,10 @@ class DateTime:
         result.add_day(other.date.day)
         result.add_month(other.date.month)
         result.add_year(other.date.year)
-        # result.add_year(other.date.year)
-        # result.add_month(other.date.month)
-        # result.add_day(other.date.day)
-        # result.add_hour(other.time.hour)
-        # result.add_minute(other.time.minute)
-        # result.add_second(other.time.second)
         return result
 
     def __sub__(self, other):
-        if self.__date.year > other.__date.year:
+        if self >= other:
             result = deepcopy(self)
             result.sub_second(other.time.second)
             result.sub_minute(other.time.minute)
@@ -393,9 +497,10 @@ class DateTime:
 # print(dt2)
 
 # dt = DateTime(Date(2021, 3, 31), Time(23, 5, 6))
-# dt.sub_month(13)
+# # dt.sub_month(13)
 # print(dt)
 # otherr = DateTime(Date(2022, 7, 12), Time(10, 5, 1))
+# print(otherr)
 # print(otherr - dt)
 # otherr.sub_hour(23)
 # print(otherr)
@@ -403,4 +508,14 @@ class DateTime:
 # print(otherr)
 # otherr.sub_second(6)
 # print(otherr)
-# # print(other)
+# print(other)
+
+# dt1 = DateTime(Date(2020, 2, 28), Time(23, 59, 0))
+# print(dt1)
+# dt1.sub_month(13)
+# print(dt1)
+
+# dt11 = DateTime(Date(2020, 2, 29), Time(23, 59, 59))
+# print(dt11)
+# dt11.add_month(12)
+# print(dt11)
