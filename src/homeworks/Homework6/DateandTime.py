@@ -265,9 +265,6 @@ class Time:
         return result
 
 
-print(Time(22, 59, 0) >= Time(23, 59, 0))
-
-
 class DateTimeError(Exception):
     pass
 
@@ -438,6 +435,18 @@ class DateTime:
         else:
             raise DateTimeError
 
+    def duration(self, other):
+        result = 0
+        if self >= other:
+            while not self.__date == other.__date:
+                other.add_day(1)
+                result += 1
+            if other.__time > self.__time:
+                result -= 1
+            return f"{result} days"
+        else:
+            raise DateTimeError
+
 
 # dt1 = DateTime(Date(2001, 2, 28), Time(12, 34, 56))
 # dt1.sub_second(8)
@@ -519,3 +528,7 @@ class DateTime:
 # print(dt11)
 # dt11.add_month(12)
 # print(dt11)
+
+print(DateTime(Date(2020, 2, 28), Time(23, 59, 0)).duration(DateTime(Date(2020, 2, 28), Time(23, 59, 0))))
+print(DateTime(Date(2021, 2, 28), Time(23, 59, 0)).duration(DateTime(Date(2020, 2, 28), Time(23, 59, 0))))
+print(DateTime(Date(2021, 2, 28), Time(22, 59, 0)).duration(DateTime(Date(2020, 2, 28), Time(23, 59, 0))))
