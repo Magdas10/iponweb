@@ -115,7 +115,8 @@ class Date:
             Date.daysOfMonths[1] = self.dct["February"]
             if self.month == 2 and self.day == 29:
                 self.day = Date.daysOfMonths[1]
-
+            if self.__day > Date.daysOfMonths[self.month - 1]:
+                self.__day = Date.daysOfMonths[self.month - 1]
         else:
             raise DateError
 
@@ -137,7 +138,9 @@ class Date:
 # print(Date(2020, 2, 13) >= Date(2020, 2, 14))
 
 
-# d = Date(2000, 2, 29)
+# d = Date(2000, 3, 31)
+# print(d)
+# d.add_month(1)
 # print(d)
 # d.add_month(1)
 # print(d)
@@ -347,6 +350,9 @@ class DateTime:
             Date.daysOfMonths[1] = self.__date.dct["February"]
             if self.__date.month == 2 and self.__date.day == 29:
                 self.__date.day = Date.daysOfMonths[1]
+            if self.__date.day > Date.daysOfMonths[self.__date.month - 1]:
+                self.__date.day = Date.daysOfMonths[self.__date.month - 1]
+
         else:
             raise DateTimeError
 
@@ -505,6 +511,20 @@ class DateTime:
 # dt2.sub_second(19)
 # print(dt2)
 
+# d = DateTime(Date(2000, 2, 29),Time(23,59,59))
+# print(d)
+# d.sub_month(1)
+# print(d)
+# d.sub_day(366)
+# print(d)
+# d.sub_day(365)
+# print(d)
+# d.sub_day(1)
+# print(d)
+# d.sub_day(366)
+# print(d)
+
+
 # dt = DateTime(Date(2021, 3, 31), Time(23, 5, 6))
 # # dt.sub_month(13)
 # print(dt)
@@ -529,6 +549,11 @@ class DateTime:
 # dt11.add_month(12)
 # print(dt11)
 
-print(DateTime(Date(2020, 2, 28), Time(23, 59, 0)).duration(DateTime(Date(2020, 2, 28), Time(23, 59, 0))))
-print(DateTime(Date(2021, 2, 28), Time(23, 59, 0)).duration(DateTime(Date(2020, 2, 28), Time(23, 59, 0))))
-print(DateTime(Date(2021, 2, 28), Time(22, 59, 0)).duration(DateTime(Date(2020, 2, 28), Time(23, 59, 0))))
+# d = DateTime(Date(2020, 5, 31), Time(23, 59, 0))
+# print(d)
+# d.sub_month(1)
+# print(d)
+
+# print(DateTime(Date(2020, 2, 28), Time(23, 59, 0)).duration(DateTime(Date(2020, 2, 28), Time(23, 59, 0))))
+# print(DateTime(Date(2021, 2, 28), Time(23, 59, 0)).duration(DateTime(Date(2020, 2, 28), Time(23, 59, 0))))
+# print(DateTime(Date(2021, 2, 28), Time(22, 59, 0)).duration(DateTime(Date(2020, 2, 28), Time(23, 59, 0))))
