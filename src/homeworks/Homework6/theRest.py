@@ -6,7 +6,7 @@ class MoneyError(Exception):
 
 
 class Money:
-    exchange = {"AMD": 1, "RUB": 0.177391, "USD": 400, "EUR": 0.002291}
+    exchange = {"AMD": 1, "RUB": 0.177391, "USD": 0.002495, "EUR": 0.002291}
 
     def __init__(self, amount: int, currency: str):
         if isinstance(amount, (int, float)) and amount >= 0 and isinstance(currency, str):
