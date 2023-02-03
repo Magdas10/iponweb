@@ -6,7 +6,7 @@ class MoneyError(Exception):
 
 
 class Money:
-    exchange = {"AMD": 1, "RUB": 5.8, "USD": 400, "EUR": 430}
+    exchange = {"AMD": 1, "RUB": 0.177391, "USD": 400, "EUR": 0.002291}
 
     def __init__(self, amount: int, currency: str):
         if isinstance(amount, (int, float)) and amount >= 0 and isinstance(currency, str):
@@ -690,7 +690,7 @@ class Student(Person):
             self.__faculty = faculty
         else:
             raise StudentError("Faculty should be a string")
-        if isinstance(course, int):
+        if isinstance(course, str):
             self.__course = course
         else:
             raise StudentError("Course should be a string")
@@ -727,7 +727,7 @@ class Student(Person):
 
     @course.setter
     def course(self, value):
-        if isinstance(value, int):
+        if isinstance(value, str):
             self.__course = value
         else:
             raise StudentError("Course should be a string")
