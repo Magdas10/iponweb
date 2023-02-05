@@ -1,5 +1,4 @@
-import date_and_time
-
+import date_and_time as DateandTime
 
 class MoneyError(Exception):
     pass
