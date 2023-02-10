@@ -16,7 +16,6 @@ def counting_sort(lst: list):
         count[lst[i]] -= 1
         i -= 1
 
-    # Copy the sorted elements into original array
     for i in range(0, size):
         lst[i] = result[i]
 
