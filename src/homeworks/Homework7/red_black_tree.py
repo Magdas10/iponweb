@@ -230,7 +230,7 @@ class RedBlackTree:
         if y_original_color == 0:
             self.fix_after_delete(x)
 
-    def delete_node(self, item):
+    def delete(self, item):
         self.for_delete(self.root, item)
 
     def search(self, value):
@@ -257,17 +257,20 @@ class RedBlackTree:
 
 bst = RedBlackTree()
 
-bst.insert(55)
-bst.insert(40)
-bst.insert(65)
+bst.insert(5)
+bst.insert(13)
+bst.insert(8)
 bst.print()
 print("-------------------------")
 
 bst.insert(60)
-bst.insert(75)
-bst.insert(57)
+bst.insert(7)
+bst.insert(77)
 
 bst.print()
 print("-------------------------")
-bst.delete_node(40)
+bst.delete(8)
+bst.print()
+print("-------------------------")
+bst.delete(5)
 bst.print()
