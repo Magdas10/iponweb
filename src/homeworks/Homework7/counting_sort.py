@@ -1,5 +1,3 @@
-# Counting sort in Python programming
-
 
 def counting_sort(lst: list):
     size = len(lst)
